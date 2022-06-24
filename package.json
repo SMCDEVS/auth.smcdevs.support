@@ -8,14 +8,15 @@
   },
   "author": [
     {
-      "name": "Park Min Jae",
-      "email": "qkr07224@gmail.cokm"
+      "name": "Park Min Jae"
     }
   ],
-  "license": "MIT",
-  "dependencies": {
+  "license": "MIT ",
+  "devDependencies": {
     "@types/aws-lambda": "^8.10.97",
-    "@types/node": "^17.0.38",
+    "@types/node": "^17.0.38"
+  },
+  "dependencies": {
     "amazon-cognito-identity-js": "^5.2.9",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1145.0",
