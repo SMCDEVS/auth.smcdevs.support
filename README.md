@@ -1,8 +1,6 @@
 # auth.smcdevs.support
 
 ## How to use
-
----
 #### SignUp
 
 ``` 
