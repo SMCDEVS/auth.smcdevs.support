@@ -2,34 +2,29 @@ import * as AWSCognitoIdentity from 'amazon-cognito-identity-js'
 import { userData, authenticationData, emailData } from './model/Datas'
 import { UserPool } from './config/UserPool'
 
+
 /**
  *
- * @param Username
- * @param Password
- * @param Email
+ * @param {string} Username
+ * @param {string} Password
+ * @param {string} Email
  */
-export function signUp({ Username, Password, Email }: { Username: string, Password: string, Email: string }): { message: string } {
+export async function signUp({ Username, Password, Email }: { Username: string, Password: string, Email: string }): Promise<{ message: string }> {
     emailData.Value = Email
     let attributeList: AWSCognitoIdentity.CognitoUserAttribute[] = [
         new AWSCognitoIdentity.CognitoUserAttribute(emailData)
     ]
-    let resultMessage: { message: string } = { message: '' }
 
-    UserPool.signUp(Username, Password, attributeList, attributeList,
-        (err: Error | undefined, result: AWSCognitoIdentity.ISignUpResult | undefined): void => {
+    let resultMessage: { message: string } = await new Promise((resolve, reject) => {
+        UserPool.signUp(Username, Password, attributeList, attributeList,
+                (err: Error | undefined, result: AWSCognitoIdentity.ISignUpResult | undefined): void => {
 
-        if(err) {
-            resultMessage = {
-                message: err.message || JSON.stringify(err)
-            }
-            return
-        }
+                if(err)
+                    reject({ message: err.message || JSON.stringify(err) })
+                else
+                    resolve({ message: result?.user.getUsername() + '님, 가입 요청이 성공적으로 완료되었습니다. 관리자의 승인을 기다려 주세요.' })
 
-        resultMessage = {
-            message: result?.user.getUsername() + '님, 가입 요청이 성공적으로 완료되었습니다. ' +
-                '관리자의 승인을 기다려 주세요.'
-        }
-
+            })
     })
 
     return resultMessage
@@ -37,10 +32,10 @@ export function signUp({ Username, Password, Email }: { Username: string, Passwo
 
 /**
  *
- * @param Username
- * @param Password
+ * @param {string} Username
+ * @param {string} Password
  */
-export function signIn({Username, Password}: { Username: string, Password: string }): string {
+export async function signIn({ Username, Password }: { Username: string, Password: string }): Promise<string> {
     userData.Username = Username
     const cognitoUser: AWSCognitoIdentity.CognitoUser = new AWSCognitoIdentity.CognitoUser(userData)
 
@@ -48,17 +43,37 @@ export function signIn({Username, Password}: { Username: string, Password: strin
     authenticationData.Password = Password
     const authenticationDetails: AWSCognitoIdentity.AuthenticationDetails = new AWSCognitoIdentity.AuthenticationDetails(authenticationData)
 
-    let jwtToken: string = ''
 
-    cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: function (result: AWSCognitoIdentity.CognitoUserSession) {
-            jwtToken = result.getAccessToken().getJwtToken()
-        },
+    let result: string = await new Promise((resolve, reject) => {
+        cognitoUser.authenticateUser(authenticationDetails, {
+            onSuccess: function (result: AWSCognitoIdentity.CognitoUserSession) {
+                resolve(result.getIdToken().getJwtToken())
+            },
 
-        onFailure: function (err) {
-            console.log(err)
-        }
+            onFailure: function (err) {
+                reject(err.message || err)
+            }
+        })
     })
 
-    return jwtToken
+    return result
+}
+
+/**
+ *
+ * @param {string} Username
+ * @param {string} ConfirmationCode
+ */
+export async function confirm({ Username, ConfirmationCode }: { Username: string, ConfirmationCode: string }): Promise<any> {
+    userData.Username = Username
+    const cognitoUser: AWSCognitoIdentity.CognitoUser = new AWSCognitoIdentity.CognitoUser(userData)
+
+    return await new Promise((resolve, reject) => {
+        cognitoUser.confirmRegistration(ConfirmationCode, true, (err, result) => {
+            if(err)
+                reject(err.message || JSON.stringify(err))
+            else
+                resolve(result)
+        })
+    })
 }

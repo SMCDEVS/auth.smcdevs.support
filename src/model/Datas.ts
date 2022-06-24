@@ -1,6 +1,4 @@
 import * as AWSCognitoIdentity from 'amazon-cognito-identity-js'
-import { UserPool }from '../config/UserPool'
-
 
 export const poolData: AWSCognitoIdentity.ICognitoUserPoolData = {
     UserPoolId: process.env.USER_POOL_ID || '',
