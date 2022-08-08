@@ -1,6 +1,6 @@
-import * as AWSCognitoIdentity from 'amazon-cognito-identity-js'
-import { userData, authenticationData, emailData } from './model/Datas'
-import { UserPool } from './config/UserPool'
+import * as AWSCognitoIdentity from 'amazon-cognito-identity-js';
+import { poolData, userData, authenticationData, emailData } from './data';
+import {CognitoUserPool} from "amazon-cognito-identity-js";
 
 
 /**
@@ -10,13 +10,16 @@ import { UserPool } from './config/UserPool'
  * @param {string} Email
  */
 export async function signUp({ Username, Password, Email }: { Username: string, Password: string, Email: string }): Promise<{ message: string }> {
-    emailData.Value = Email
+    emailData.Value = Email;
     let attributeList: AWSCognitoIdentity.CognitoUserAttribute[] = [
         new AWSCognitoIdentity.CognitoUserAttribute(emailData)
-    ]
+    ];
 
     let resultMessage: { message: string } = await new Promise((resolve, reject) => {
-        UserPool.signUp(Username, Password, attributeList, attributeList,
+
+        const userPool = new CognitoUserPool(poolData);
+
+        userPool.signUp(Username, Password, attributeList, attributeList,
                 (err: Error | undefined, result: AWSCognitoIdentity.ISignUpResult | undefined): void => {
 
                 if(err)
