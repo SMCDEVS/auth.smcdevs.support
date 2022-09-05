@@ -25,12 +25,12 @@ export async function signUp({ Username, Password, Email }: { Username: string, 
                 if(err)
                     reject({ message: err.message || JSON.stringify(err) })
                 else
-                    resolve({ message: result?.user.getUsername() + '님, 가입 요청이 성공적으로 완료되었습니다. 관리자의 승인을 기다려 주세요.' })
+                    resolve({ message: `User ${result?.user.getUsername()}, sign up successfully.` })
 
-            })
+            });
     })
 
-    return resultMessage
+    return resultMessage;
 }
 
 /**
@@ -39,27 +39,27 @@ export async function signUp({ Username, Password, Email }: { Username: string, 
  * @param {string} Password
  */
 export async function signIn({ Username, Password }: { Username: string, Password: string }): Promise<string> {
-    userData.Username = Username
-    const cognitoUser: AWSCognitoIdentity.CognitoUser = new AWSCognitoIdentity.CognitoUser(userData)
+    userData.Username = Username;
+    const cognitoUser: AWSCognitoIdentity.CognitoUser = new AWSCognitoIdentity.CognitoUser(userData);
 
-    authenticationData.Username = Username
-    authenticationData.Password = Password
-    const authenticationDetails: AWSCognitoIdentity.AuthenticationDetails = new AWSCognitoIdentity.AuthenticationDetails(authenticationData)
+    authenticationData.Username = Username;
+    authenticationData.Password = Password;
+    const authenticationDetails: AWSCognitoIdentity.AuthenticationDetails = new AWSCognitoIdentity.AuthenticationDetails(authenticationData);
 
 
     let result: string = await new Promise((resolve, reject) => {
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: function (result: AWSCognitoIdentity.CognitoUserSession) {
-                resolve(result.getIdToken().getJwtToken())
+                resolve(result.getIdToken().getJwtToken());
             },
 
             onFailure: function (err) {
-                reject(err.message || err)
+                reject(err.message || err);
             }
         })
-    })
+    });
 
-    return result
+    return result;
 }
 
 /**
@@ -68,15 +68,15 @@ export async function signIn({ Username, Password }: { Username: string, Passwor
  * @param {string} ConfirmationCode
  */
 export async function confirm({ Username, ConfirmationCode }: { Username: string, ConfirmationCode: string }): Promise<any> {
-    userData.Username = Username
-    const cognitoUser: AWSCognitoIdentity.CognitoUser = new AWSCognitoIdentity.CognitoUser(userData)
+    userData.Username = Username;
+    const cognitoUser: AWSCognitoIdentity.CognitoUser = new AWSCognitoIdentity.CognitoUser(userData);
 
     return await new Promise((resolve, reject) => {
         cognitoUser.confirmRegistration(ConfirmationCode, true, (err, result) => {
             if(err)
-                reject(err.message || JSON.stringify(err))
+                reject(err.message || JSON.stringify(err));
             else
-                resolve(result)
+                resolve(result);
         })
     })
 }
