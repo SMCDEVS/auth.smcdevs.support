@@ -1,0 +1,6 @@
+node_modules
+.gitignore
+.dockerignore
+LICENSE
+*.md
+src/lambda
