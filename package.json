@@ -4,7 +4,7 @@
   "description": "Authorization service for SMCDEVS",
   "main": "src/app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "esbuild src/app.ts --bundle --minify --sourcemap --platform=node --target=es6 --outfile=app.js"
   },
   "author": [
     {
@@ -14,7 +14,8 @@
   "license": "MIT ",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.97",
-    "@types/node": "^17.0.38"
+    "@types/node": "^17.0.38",
+    "esbuild": "^0.15.8"
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^5.2.9",
