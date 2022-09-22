@@ -4,14 +4,16 @@
 #### SignUp
 
 ``` 
-curl -X POST auth.smcdevs.support/signup \
+curl -X POST \
      -H "Content-Type: application/json" \
-     -d '{ "Username": "username", "Password": "password", "Email": "example@example.com" }'
+     -d '{ "Username": "username", "Password": "password", "Email": "example@example.com" }' \
+     auth.smcdevs.support/signup
 ```
 
 #### SignIn
 ```
-curl -X POST auth.smcdevs.support/signin \
+curl -X POST \
      -H "Content-Type: application/json" \
-     -d '{ "Username": "username", "Password": "password" }'
+     -d '{ "Username": "username", "Password": "password" }' \
+     auth.smcdevs.support/signin
 ```
