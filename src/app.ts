@@ -33,6 +33,6 @@ export const handler = async (event: APIGatewayEvent, context: Context ): Promis
 
     return {
         statusCode: 200,
-        body: JSON.stringify(event)
+        body: JSON.stringify(result)
     };
 };
