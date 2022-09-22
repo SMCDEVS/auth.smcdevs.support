@@ -1,7 +1,7 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayEvent, APIGatewayProxyResult, Context} from "aws-lambda";
 import { signUp, signIn } from "./auth";
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: APIGatewayEvent, context: Context ): Promise<APIGatewayProxyResult> => {
 
     let result: { [key: string]: any } = {}
 
